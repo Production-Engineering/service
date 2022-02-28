@@ -1,21 +1,29 @@
 package ro.unibuc.hello.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import ro.unibuc.hello.data.InformationEntity;
-import ro.unibuc.hello.data.InformationRepository;
+import ro.unibuc.hello.data.Account;
+import ro.unibuc.hello.data.AccountRepository;
+import ro.unibuc.hello.data.RoleRepository;
 import ro.unibuc.hello.dto.Greeting;
+
 
 @Controller
 public class HelloWorldController {
 
     @Autowired
-    private InformationRepository informationRepository;
+    private AccountRepository accountRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     private static final String helloTemplate = "Hello, %s!";
     private static final String informationTemplate = "%s : %s!";
@@ -27,11 +35,7 @@ public class HelloWorldController {
         return new Greeting(counter.incrementAndGet(), String.format(helloTemplate, name));
     }
 
-    @GetMapping("/info")
-    @ResponseBody
-    public Greeting listAll(@RequestParam(name="title", required=false, defaultValue="Overview") String title) {
-        InformationEntity entity = informationRepository.findByTitle(title);
-        return new Greeting(counter.incrementAndGet(), String.format(informationTemplate, entity.title, entity.description));
-    }
+
+
 
 }
