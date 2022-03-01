@@ -3,6 +3,7 @@ package ro.unibuc.hello;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +12,7 @@ import ro.unibuc.hello.data.Account;
 import ro.unibuc.hello.data.AccountRepository;
 import ro.unibuc.hello.data.Role;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,8 +31,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         Account acc = accountRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email: "+email));
-        return new org.springframework.security.core.userdetails.User(acc.getEmail(),
-                acc.getPassword(), mapRolesToAuthorities(acc.getRoles()));
+        return new User(acc.getEmail(), acc.getPassword(), mapRolesToAuthorities(acc.getRoles()));
+    }
+
+
+    public List<UserDetails> loadAllUsers()
+    {
+        var accounts = accountRepository.findAll();
+        return accounts.stream().map(acc -> new User(acc.getEmail(),
+                acc.getPassword(), mapRolesToAuthorities(acc.getRoles()))).collect(Collectors.toList());
+
     }
 
     private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){

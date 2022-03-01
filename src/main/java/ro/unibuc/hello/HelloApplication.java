@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.security.core.userdetails.User;
 import ro.unibuc.hello.data.Account;
 import ro.unibuc.hello.data.AccountRepository;
 import ro.unibuc.hello.data.Role;
@@ -27,10 +28,23 @@ public class HelloApplication {
 	@PostConstruct
 	public void runAfterObjectCreated() {
 		accountRepository.deleteAll();
-		accountRepository.save(new Account("radu.ndlcu@gmail.com",
-				"Radu", "Nedelcu","1234"));
-		roleRepository.save(new Role(1,"admin"));
-		roleRepository.save(new Role(2,"user"));
+		roleRepository.deleteAll();
+
+		Account radu = new Account("radu.ndlcu@gmail.com",
+				"Radu", "Nedelcu","1234");
+		Account admin = new Account("admin@gmail.com","admin","admin","admin");
+
+		Role adminRole = new Role(1,"ADMIN");
+		Role userRole = new Role(2,"USER");
+
+		roleRepository.save(adminRole);
+		roleRepository.save(userRole);
+
+		admin.addRole(adminRole);
+		radu.addRole(userRole);
+
+		accountRepository.save(admin);
+		accountRepository.save(radu);
 	}
 
 }
