@@ -21,12 +21,12 @@ public class Account{
     @NonNull private String password;
     @NonNull private Date dateCreated;
     private Set<Role> roles = new HashSet<>();
-    public Account(@NotNull String email, @NotNull String firstName, @NotNull String lastName, String password) {
+    public Account(@NotNull String email, @NotNull String firstName, @NotNull String lastName, @NotNull String password) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateCreated = new Date();
-        this.password = new BCryptPasswordEncoder().encode(password);
+        this.password = password;
     }
     public void changePassword(String oldPlainPass, String newPass)
     {
