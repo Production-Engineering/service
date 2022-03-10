@@ -9,18 +9,15 @@ import java.util.Random;
 
 @Document(collection = "encodings")
 public class Url {
+
+    private String userEmail; //If a logged in user created the url, store the email
     private String shortUrl;
-    @Id @NonNull private String longUrl;
+    @Id @NonNull private String longUrl; //By having this as the ID we restrict users from shortening the same URL, should change
 
     public Url(@NonNull String longUrl){
         this.longUrl = longUrl;
     }
 
-    public void shortenUrl(){
-        byte[] array = new byte[8];
-        new Random().nextBytes(array);
-        shortUrl = new String(array, Charset.forName("UTF-8"));
-    }
 
     public String getShortUrl() {
         return shortUrl;

@@ -52,6 +52,10 @@ public class HelloApplication {
 
 		accountRepository.save(admin);
 		accountRepository.save(radu);
+
+		Url url = new Url("https://github.com/Production-Engineering/service/tree/main/src/main");
+		url.setShortUrl("1234");
+		urlRepository.save(url);
 	}
 
 }

@@ -1,49 +1,60 @@
 package ro.unibuc.hello.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ro.unibuc.hello.UrlService;
 import ro.unibuc.hello.data.Url;
-import ro.unibuc.hello.data.UrlRepository;
 
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 @Controller
 public class UrlController {
 
     @Autowired
-    private UrlRepository urlRepository;
+    private UrlService urlService;
 
     @GetMapping("/getall")
+    @ResponseBody
     public List<Url> getAll(){
-        return UrlService.getAll();
+        return urlService.getAll();
     }
 
     @PostMapping("/shorten")
-    public String shortenUrl(@RequestBody Url url){
-        if(UrlService.shortenUrl(url)){
-            return "Url shortened to: " + UrlService.findByLongUrl(url.getLongUrl()).getShortUrl();
+    @ResponseBody
+    public String shortenUrl(@RequestBody String url) {
+        String escapedURL = null;
+        System.out.println(url);
+        try {
+           escapedURL = new URL(url).toString();
+        } catch (MalformedURLException e) {
+            return "Invalid URL";
         }
-        return "Url shortened to: " + UrlService.findByLongUrl(url.getLongUrl()).getShortUrl();
+
+        if (urlService.shortenUrl(escapedURL)){
+            return "Url shortened to: " + urlService.findByLongUrl(escapedURL).getShortUrl();
+        }
+        return "Url shortened to: " + urlService.findByLongUrl(escapedURL).getShortUrl();
     }
 
     @GetMapping("/get/{shortUrl}")
+    @ResponseBody
     public Url getShortUrl(@PathVariable String shortUrl){
-        return UrlService.findByShortUrl(shortUrl);
+        System.out.println("getShortURL received: " + shortUrl);
+        return urlService.findByShortUrl(shortUrl);
     }
 
     @GetMapping("/{shortUrl}")
     public ModelAndView redirect(@PathVariable String shortUrl, ModelMap model){
-        Url url = UrlService.findByShortUrl(shortUrl);
+        Url url = urlService.findByShortUrl(shortUrl);
         if(url != null){
-            return new ModelAndView("redirect:/" + url.getLongUrl(), model);
+            return new ModelAndView("redirect:" + url.getLongUrl(), model);
         }
         else {
             return new ModelAndView("redirect:/notFound", model);
@@ -51,6 +62,7 @@ public class UrlController {
     }
 
     @GetMapping("/notFound")
+    @ResponseBody
     public String notFound(){
         return "The link was not found.";
     }

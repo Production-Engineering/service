@@ -30,11 +30,11 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
-        System.out.println(email +" " +password);
+        System.out.println("Trying to authenticate: " + email +" " +password);
         Optional<Account> user = accountRepository.findByEmail(email);
 
         if (user.isEmpty()) {
-            System.out.println("Didn't find an user");
+            System.out.println("Didn't find the user");
             throw new BadCredentialsException("1000");
         }
         if (!passwordEncoder.matches(password, user.get().getPassword())) {
