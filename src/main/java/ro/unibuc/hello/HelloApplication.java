@@ -24,7 +24,7 @@ public class HelloApplication {
 	private RoleRepository roleRepository;
 	@Autowired
 	private UrlRepository urlRepository;
-
+	@Autowired
 	private PasswordEncoder encoder;
 
 	public static void main(String[] args) {

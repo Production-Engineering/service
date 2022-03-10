@@ -26,15 +26,15 @@ public class UrlController {
         return UrlService.getAll();
     }
 
-    @PostMapping("shorten")
-    public String shortenUrl(@RequestBody String longUrl){
-        if(UrlService.shortenUrl(longUrl)){
-            return "Url shortened to: " + UrlService.findByLongUrl(longUrl).getShortUrl();
+    @PostMapping("/shorten")
+    public String shortenUrl(@RequestBody Url url){
+        if(UrlService.shortenUrl(url)){
+            return "Url shortened to: " + UrlService.findByLongUrl(url.getLongUrl()).getShortUrl();
         }
-        return "Url shortened to: " + UrlService.findByLongUrl(longUrl).getShortUrl();
+        return "Url shortened to: " + UrlService.findByLongUrl(url.getLongUrl()).getShortUrl();
     }
 
-    @GetMapping("get/{shortUrl}")
+    @GetMapping("/get/{shortUrl}")
     public Url getShortUrl(@PathVariable String shortUrl){
         return UrlService.findByShortUrl(shortUrl);
     }

@@ -4,20 +4,24 @@ import com.mongodb.lang.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.nio.charset.Charset;
+import java.util.Random;
+
 @Document(collection = "encodings")
 public class Url {
-    @NonNull private String shortUrl;
+    private String shortUrl;
     @Id @NonNull private String longUrl;
 
-    public Url(String longUrl){
+    public Url(@NonNull String longUrl){
         this.longUrl = longUrl;
     }
 
     public void shortenUrl(){
-        shortUrl = "aaa";
+        byte[] array = new byte[8];
+        new Random().nextBytes(array);
+        shortUrl = new String(array, Charset.forName("UTF-8"));
     }
 
-    @NonNull
     public String getShortUrl() {
         return shortUrl;
     }

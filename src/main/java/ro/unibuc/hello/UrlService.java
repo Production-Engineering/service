@@ -19,9 +19,8 @@ public class UrlService {
         return all;
     }
 
-    public static boolean shortenUrl(String longUrl){
-        if(!urlRepository.existsByLongUrl(longUrl)){
-            Url url = new Url(longUrl);
+    public static boolean shortenUrl(Url url){
+        if(!urlRepository.existsByLongUrl(url.getLongUrl())){
             url.shortenUrl();
             //keep generating new URL until we find one that is not taken
             //not a good long term solution
