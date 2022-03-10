@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class UrlService {
     @Autowired
-    private UrlRepository urlRepository;
+    private static UrlRepository urlRepository;
 
     public static List<Url> getAll(){
         List<Url> all = new ArrayList<>();

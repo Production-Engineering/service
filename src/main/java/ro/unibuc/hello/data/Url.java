@@ -3,7 +3,6 @@ package ro.unibuc.hello.data;
 import com.mongodb.lang.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import javax.
 
 @Document(collection = "encodings")
 public class Url {
