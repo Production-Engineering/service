@@ -4,8 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+<<<<<<< HEAD
 import org.springframework.security.core.userdetails.User;
 import ro.unibuc.hello.data.*;
+=======
+import org.springframework.security.crypto.password.PasswordEncoder;
+import ro.unibuc.hello.data.Account;
+import ro.unibuc.hello.data.AccountRepository;
+import ro.unibuc.hello.data.Role;
+import ro.unibuc.hello.data.RoleRepository;
+>>>>>>> 48dfa0c3681e48661823467ad787391b7e0aee8f
 
 import javax.annotation.PostConstruct;
 
@@ -20,6 +28,8 @@ public class HelloApplication {
 	@Autowired
 	private UrlRepository urlRepository;
 
+	private PasswordEncoder encoder;
+
 	public static void main(String[] args) {
 		SpringApplication.run(HelloApplication.class, args);
 	}
@@ -29,10 +39,10 @@ public class HelloApplication {
 		accountRepository.deleteAll();
 		roleRepository.deleteAll();
 		urlRepository.deleteAll();
-
+		
 		Account radu = new Account("radu.ndlcu@gmail.com",
-				"Radu", "Nedelcu","1234");
-		Account admin = new Account("admin@gmail.com","admin","admin","admin");
+				"Radu", "Nedelcu",encoder.encode("1234"));
+		Account admin = new Account("admin@gmail.com","admin","admin",encoder.encode("admin"));
 
 		Role adminRole = new Role(1,"ADMIN");
 		Role userRole = new Role(2,"USER");

@@ -1,4 +1,4 @@
-package ro.unibuc.hello;
+package ro.unibuc.hello.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
