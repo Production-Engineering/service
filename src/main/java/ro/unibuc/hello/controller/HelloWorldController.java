@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ro.unibuc.hello.data.Account;
 import ro.unibuc.hello.data.AccountRepository;
 import ro.unibuc.hello.data.RoleRepository;
+import ro.unibuc.hello.data.UrlRepository;
 import ro.unibuc.hello.dto.Greeting;
 
 
@@ -24,6 +25,8 @@ public class HelloWorldController {
     private AccountRepository accountRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private UrlRepository urlRepository;
 
     private static final String helloTemplate = "Hello, %s!";
     private static final String informationTemplate = "%s : %s!";
