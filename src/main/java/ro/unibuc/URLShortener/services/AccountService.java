@@ -1,5 +1,4 @@
-package ro.unibuc.hello.controller;
-
+package ro.unibuc.URLShortener.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,26 +7,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import ro.unibuc.hello.config.CustomAuthenticationManager;
-import ro.unibuc.hello.data.Account;
-import ro.unibuc.hello.data.AccountRepository;
-import ro.unibuc.hello.data.Role;
-import ro.unibuc.hello.data.RoleRepository;
-import ro.unibuc.hello.dto.AccountDTO;
-import ro.unibuc.hello.dto.LoginDTO;
+import org.springframework.stereotype.Component;
+import ro.unibuc.URLShortener.data.Account;
+import ro.unibuc.URLShortener.data.AccountRepository;
+import ro.unibuc.URLShortener.data.Role;
+import ro.unibuc.URLShortener.data.RoleRepository;
+import ro.unibuc.URLShortener.dto.AccountDTO;
+import ro.unibuc.URLShortener.dto.LoginDTO;
+import ro.unibuc.URLShortener.security.CustomAuthenticationManager;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-public class AccountController {
-
+@Component
+public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -37,8 +30,7 @@ public class AccountController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/createAccount")
-    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountDTO accountDTO) {
+    public ResponseEntity<?> createAccount(AccountDTO accountDTO) {
 
         if (!accountDTO.getPassword().equals(accountDTO.getMatchingPassword()))
             return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
@@ -55,25 +47,30 @@ public class AccountController {
     }
 
 
-    @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDTO loginDTO) {
-    //TO DO: This always returns 403 Forbidden because of line 65, why?y7
+    public ResponseEntity<?> authenticateUser(LoginDTO loginDTO) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-               loginDTO.getEmail(),loginDTO.getPassword()));
+                loginDTO.getEmail(), loginDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/admin/info")
-    @ResponseBody
     public ResponseEntity<?> listAll() {
         List<Account> entity = accountRepository.findAll();
-
-
         return new ResponseEntity<>(entity, HttpStatus.OK);
     }
 
-}
+    public ResponseEntity<?> changePassword(String oldPlainPass, String newPass) {
+        String authenticatedEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Account authenticatedAcc = accountRepository.findByEmail(authenticatedEmail).get();
+        String currentPassword = authenticatedAcc.getPassword();
+        if (passwordEncoder.matches(oldPlainPass, currentPassword)) {
+            String encodedPassword = passwordEncoder.encode(newPass);
+            authenticatedAcc.setPassword(encodedPassword);
+            accountRepository.save(authenticatedAcc);
+            return new ResponseEntity<>("Password changed sucessfully!", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Old password is incorrect", HttpStatus.BAD_REQUEST);
+    }
 
+}

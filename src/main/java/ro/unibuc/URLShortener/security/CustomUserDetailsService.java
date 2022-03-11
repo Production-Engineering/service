@@ -1,4 +1,4 @@
-package ro.unibuc.hello.config;
+package ro.unibuc.URLShortener.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ro.unibuc.hello.data.Account;
-import ro.unibuc.hello.data.AccountRepository;
-import ro.unibuc.hello.data.Role;
+import ro.unibuc.URLShortener.data.Account;
+import ro.unibuc.URLShortener.data.AccountRepository;
+import ro.unibuc.URLShortener.data.Role;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

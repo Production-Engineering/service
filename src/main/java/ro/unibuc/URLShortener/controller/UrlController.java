@@ -1,4 +1,4 @@
-package ro.unibuc.hello.controller;
+package ro.unibuc.URLShortener.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import ro.unibuc.hello.UrlService;
-import ro.unibuc.hello.data.Url;
+import ro.unibuc.URLShortener.services.UrlService;
+import ro.unibuc.URLShortener.data.Url;
 
 
 import java.net.MalformedURLException;
@@ -36,11 +36,9 @@ public class UrlController {
         } catch (MalformedURLException e) {
             return "Invalid URL";
         }
+        String shortened = urlService.shortenUrl(url);
+        return "Url shortened to: " + shortened;
 
-        if (urlService.shortenUrl(escapedURL)){
-            return "Url shortened to: " + urlService.findByLongUrl(escapedURL).getShortUrl();
-        }
-        return "Url shortened to: " + urlService.findByLongUrl(escapedURL).getShortUrl();
     }
 
     @GetMapping("/get/{shortUrl}")

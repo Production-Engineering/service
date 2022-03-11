@@ -1,19 +1,16 @@
-package ro.unibuc.hello.config;
+package ro.unibuc.URLShortener.security;
 
-import org.jetbrains.annotations.Debug;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ro.unibuc.hello.data.Account;
-import ro.unibuc.hello.data.AccountRepository;
-import ro.unibuc.hello.data.Role;
+import ro.unibuc.URLShortener.data.Account;
+import ro.unibuc.URLShortener.data.AccountRepository;
+import ro.unibuc.URLShortener.data.Role;
 
 import java.util.Optional;
 import java.util.Set;

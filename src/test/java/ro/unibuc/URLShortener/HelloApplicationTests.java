@@ -1,10 +1,10 @@
-package ro.unibuc.hello;
+package ro.unibuc.URLShortener;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ro.unibuc.hello.data.AccountRepository;
-import ro.unibuc.hello.data.RoleRepository;
+import ro.unibuc.URLShortener.data.AccountRepository;
+import ro.unibuc.URLShortener.data.RoleRepository;
 
 
 @SpringBootTest
@@ -14,8 +14,6 @@ class HelloApplicationTests {
 	AccountRepository mockRepository;
 	@MockBean
 	RoleRepository mockRoleRepository;
-	//@Test
-	//void contextLoads() {
-	//}
+
 
 }

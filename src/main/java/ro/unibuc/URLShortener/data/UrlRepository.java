@@ -1,11 +1,7 @@
-package ro.unibuc.hello.data;
+package ro.unibuc.URLShortener.data;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * No need to implement this interface.

@@ -1,4 +1,4 @@
-package ro.unibuc.hello.data;
+package ro.unibuc.URLShortener.data;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -6,7 +6,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 

@@ -1,4 +1,4 @@
-package ro.unibuc.hello.data;
+package ro.unibuc.URLShortener.data;
 
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package ro.unibuc.hello.dto;
+package ro.unibuc.URLShortener.dto;
 
 import org.jetbrains.annotations.NotNull;
 
