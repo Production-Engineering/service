@@ -5,14 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ro.unibuc.URLShortener.data.Account;
-import ro.unibuc.URLShortener.data.AccountRepository;
-import ro.unibuc.URLShortener.data.Url;
-import ro.unibuc.URLShortener.data.UrlRepository;
+import ro.unibuc.URLShortener.data.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Service
 public class UrlService {
@@ -47,6 +43,16 @@ public class UrlService {
         }
         return null;
     }
+    public Url findByShortUrl(String shortUrl, HttpServletRequest httpReq) {
+        if (urlRepository.existsByShortUrl(shortUrl)) {
+            Url url = urlRepository.findByShortUrl(shortUrl);
+            Request req = parseHTTPReq(httpReq);
+            url.addRequest(req);
+
+            return urlRepository.save(url);
+        }
+        return null;
+    }
 
     public Url findByLongUrl(String longUrl) {
         if (urlRepository.existsByLongUrl(longUrl)) {
@@ -73,5 +79,95 @@ public class UrlService {
 
         }
         urlRepository.save(url);
+    }
+
+    private Request parseHTTPReq(HttpServletRequest httpReq)
+    {
+        String ip = getClientIpAddress(httpReq);
+        String userAgent = httpReq.getHeader("user-agent");
+        System.out.println(getHeadersInfo(httpReq));
+        String browser = parseBrowserInfo(userAgent);
+        String deviceType = getDeviceType(userAgent);
+        Request req = new Request();
+        req.setIP(ip);
+        req.setBrowser(browser);
+        req.setDeviceType(deviceType);
+        req.setRequestDate(new Date());
+        return req;
+    }
+    private Map<String, String> getHeadersInfo(HttpServletRequest request) {
+
+        Map<String, String> map = new HashMap<String, String>();
+
+        Enumeration headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String key = (String) headerNames.nextElement();
+            String value = request.getHeader(key);
+            map.put(key, value);
+        }
+
+        return map;
+    }
+    private String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+        if (xForwardedForHeader == null) {
+            return request.getRemoteAddr();
+        } else {
+            // As of https://en.wikipedia.org/wiki/X-Forwarded-For
+            // The general format of the field is: X-Forwarded-For: client, proxy1, proxy2 ...
+            // we only want the client
+            return new StringTokenizer(xForwardedForHeader, ",").nextToken().trim();
+        }
+    }
+    private String parseBrowserInfo(String browserInfo)
+    {
+        String browsername = "";
+        String browserversion = "";
+        if (browserInfo.contains("MSIE"))
+        {
+            String subsString = browserInfo.substring(browserInfo.indexOf("MSIE"));
+            String[] info = (subsString.split(";")[0]).split(" ");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browserInfo.contains("Firefox"))
+        {
+
+            String subsString = browserInfo.substring(browserInfo.indexOf("Firefox"));
+            String[] info = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browserInfo.contains("Chrome"))
+        {
+
+            String subsString = browserInfo.substring(browserInfo.indexOf("Chrome"));
+            String[] info = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if (browserInfo.contains("Opera"))
+        {
+
+            String subsString = browserInfo.substring(browserInfo.indexOf("Opera"));
+            String[] info = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if(browserInfo.contains("Safari"))
+        { String subsString = browserInfo.substring(browserInfo.indexOf("Safari"));
+            String[] info = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        } else if(browserInfo.contains("Postman")){
+            String subsString = browserInfo.substring(browserInfo.indexOf("Postman"));
+            String[] info = (subsString.split(" ")[0]).split("/");
+            browsername = info[0];
+            browserversion = info[1];
+        }
+        return browsername + "-" + browserversion;
+    }
+    private String getDeviceType(String userAgent) {
+        if(userAgent.contains("Mobi")) {
+            return "Mobile";
+        } else {
+           return "Desktop";
+        }
     }
 }
