@@ -6,19 +6,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import ro.unibuc.URLShortener.data.Request;
 import ro.unibuc.URLShortener.services.UrlService;
 import ro.unibuc.URLShortener.data.Url;
 
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.StringTokenizer;
 
 @Controller
 public class UrlController {
 
     @Autowired
     private UrlService urlService;
+
+    @Autowired
+    private HttpServletRequest httpReq;
 
     @GetMapping("/getall")
     @ResponseBody
@@ -50,7 +57,7 @@ public class UrlController {
 
     @GetMapping("/{shortUrl}")
     public ModelAndView redirect(@PathVariable String shortUrl, ModelMap model){
-        Url url = urlService.findByShortUrl(shortUrl);
+        Url url = urlService.findByShortUrl(shortUrl, httpReq);
         if(url != null){
             return new ModelAndView("redirect:" + url.getLongUrl(), model);
         }
@@ -64,4 +71,5 @@ public class UrlController {
     public String notFound(){
         return "The link was not found.";
     }
+
 }

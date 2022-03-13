@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Document(collection = "encodings")
 public class Url {
@@ -29,13 +31,15 @@ public class Url {
     @NonNull
     private Date dateCreated;
     private String userEmail; //If a logged in user created the url, store the email
-
+    private List<Request> requestList = new ArrayList<>();
     public Url(@NonNull String longUrl, @NonNull String shortUrl) {
         this.longUrl = longUrl;
         this.shortUrl = shortUrl;
         this.dateCreated = new Date();
     }
 
+    public void addRequest(Request req) { requestList.add(req);}
+    public List<Request> getRequestList() { return requestList; }
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
