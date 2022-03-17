@@ -7,11 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ro.unibuc.URLShortener.data.Account;
 import ro.unibuc.URLShortener.dto.AccountDTO;
 import ro.unibuc.URLShortener.dto.LoginDTO;
 import ro.unibuc.URLShortener.services.AccountService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class AccountController {
@@ -20,14 +22,14 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping("/createAccount")
-    public ResponseEntity<?> createAccount(@RequestBody @Valid AccountDTO accountDTO) {
+    public ResponseEntity<String> createAccount(@RequestBody @Valid AccountDTO accountDTO) {
 
-        return accountService.createAccount(accountDTO);
+        return (ResponseEntity<String>) accountService.createAccount(accountDTO);
 
     }
 
     @PatchMapping("/account/changepassword")
-    public ResponseEntity<?> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword)
+    public ResponseEntity<String> changePassword(@RequestParam String oldPassword, @RequestParam String newPassword)
     {
         return accountService.changePassword(oldPassword, newPassword);
     }
@@ -42,8 +44,8 @@ public class AccountController {
 
     @GetMapping("/admin/info")
     @ResponseBody
-    public ResponseEntity<?> listAll() {
-        return accountService.listAll();
+    public ResponseEntity<List<Account>> listAll() {
+        return (ResponseEntity<List<Account>>) accountService.listAll();
     }
 
 }
