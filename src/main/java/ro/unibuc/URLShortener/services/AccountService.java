@@ -55,12 +55,12 @@ public class AccountService {
         return new ResponseEntity<>("User signed-in successfully!", HttpStatus.OK);
     }
 
-    public ResponseEntity<?> listAll() {
+    public ResponseEntity<List<Account>> listAll() {
         List<Account> entity = accountRepository.findAll();
-        return new ResponseEntity<>(entity, HttpStatus.OK);
+        return new ResponseEntity<List<Account>>(entity, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> changePassword(String oldPlainPass, String newPass) {
+    public ResponseEntity<String> changePassword(String oldPlainPass, String newPass) {
         String authenticatedEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Account authenticatedAcc = accountRepository.findByEmail(authenticatedEmail).get();
         String currentPassword = authenticatedAcc.getPassword();
