@@ -3,6 +3,7 @@ package ro.unibuc.URLShortener.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -39,19 +40,19 @@ public class UrlController {
 
     @PostMapping("/shorten")
     @ResponseBody
-    public String shortenUrl(@RequestBody String url) {
+    public ResponseEntity<String> shortenUrl(@RequestBody String url) {
         String escapedURL = null;
         System.out.println(url);
         String shortened = urlService.shortenUrl(url);
-        return "Url shortened to: " + shortened;
+        return new ResponseEntity<>(shortened, HttpStatus.OK);
 
     }
 
     @GetMapping("/get/{shortUrl}")
     @ResponseBody
-    public Url getShortUrl(@PathVariable String shortUrl){
+    public ResponseEntity<Url> getShortUrl(@PathVariable String shortUrl, HttpServletRequest httpReq){
         System.out.println("getShortURL received: " + shortUrl);
-        return urlService.findByShortUrl(shortUrl);
+        return new ResponseEntity<Url>(urlService.findByShortUrl(shortUrl), HttpStatus.OK);
     }
 
     @GetMapping("/{shortUrl}")
