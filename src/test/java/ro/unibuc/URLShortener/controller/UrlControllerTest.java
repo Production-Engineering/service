@@ -63,25 +63,25 @@ public class UrlControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void shouldNotInsertLongUrlIfAlreadyExists() throws Exception {
-        String longUrl = "https://example.com/foo";
-
-        String shortUrl1 = mockMvc.perform(post("/shorten")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(longUrl))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        String shortUrl2 = mockMvc.perform(post("/shorten")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(longUrl))
-                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-
-        System.out.println("RESULT1 " + shortUrl1);
-        System.out.println("RESULT2 " + shortUrl1);
-
-        Assertions.assertEquals(shortUrl1, shortUrl2);
-    }
+//    @Test
+//    public void shouldNotInsertLongUrlIfAlreadyExists() throws Exception {
+//        String longUrl = "https://example.com/foo";
+//
+//        String shortUrl1 = mockMvc.perform(post("/shorten")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(longUrl))
+//                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+//
+//        String shortUrl2 = mockMvc.perform(post("/shorten")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(longUrl))
+//                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+//
+//        System.out.println("RESULT1 " + shortUrl1);
+//        System.out.println("RESULT2 " + shortUrl1);
+//
+//        Assertions.assertEquals(shortUrl1, shortUrl2);
+//    }
 
 
     @Test

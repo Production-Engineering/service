@@ -24,10 +24,6 @@ public class UrlService {
 
 
     public String shortenUrl(String longUrl) {
-        if(findByLongUrl(longUrl) != null)
-        {
-            return findByLongUrl(longUrl).getShortUrl();
-        }
         String shortUrl = shortenUrl();
         //keep generating new URL until we find one that is not taken
         //not a good long term solution
