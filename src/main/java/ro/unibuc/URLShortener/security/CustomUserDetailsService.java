@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account acc = accountRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email: "+email));
+                        new UsernameNotFoundException("User not found with email: "+ email));
         return new User(acc.getEmail(), acc.getPassword(), mapRolesToAuthorities(acc.getRoles()));
     }
 
@@ -43,7 +43,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
-    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
+    public Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 }

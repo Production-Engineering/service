@@ -4,13 +4,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import ro.unibuc.URLShortener.data.Url;
 import ro.unibuc.URLShortener.data.UrlRepository;
 import ro.unibuc.URLShortener.services.UrlService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -30,14 +33,14 @@ public class UrlServiceTest {
     @Test
     public void test_findByShortUrl_null(){
         String shortUrl = "aaaaaaaaaa";
-        Assertions.assertEquals(urlService.findByShortUrl(shortUrl), null);
+        Assertions.assertNull(urlService.findByShortUrl(shortUrl));
     }
 
 
     @Test
     public void test_findByLongUrl_null(){
         String longUrl = "aaaaaaaaaa";
-        Assertions.assertEquals(urlService.findByLongUrl(longUrl), null);
+        Assertions.assertNull(urlService.findByLongUrl(longUrl));
     }
     
 
@@ -59,4 +62,53 @@ public class UrlServiceTest {
 
         Assertions.assertEquals(urlService.getAll(), list);
     }
+
+    @Test
+    public void test_findByShortWithParsePostman()
+    {
+        Url url = new Url("www.google.com", "1234");
+        String userAgent = "PostmanRuntime/7.29.0";
+        String ip = "192.168.0.1";
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        when(req.getHeader("user-agent")).thenReturn(userAgent);
+        when(req.getRemoteAddr()).thenReturn(ip);
+        when(urlRepository.existsByShortUrl(any())).thenReturn(true);
+        when(urlRepository.findByShortUrl(any())).thenReturn(url);
+        urlService.findByShortUrl("1234", req);
+
+        Assertions.assertTrue(url.getRequestList().size()>0);
+    }
+
+    @Test
+    public void test_findByShortWithParseMozilla()
+    {
+        Url url = new Url("www.google.com", "1234");
+        String userAgent = "Mozilla/7.29.0";
+        String ip = "192.168.0.1";
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        when(req.getHeader("user-agent")).thenReturn(userAgent);
+        when(req.getRemoteAddr()).thenReturn(ip);
+        when(urlRepository.existsByShortUrl(any())).thenReturn(true);
+        when(urlRepository.findByShortUrl(any())).thenReturn(url);
+        urlService.findByShortUrl("1234", req);
+
+        Assertions.assertTrue(url.getRequestList().size()>0);
+    }
+    @Test
+    public void test_findByShortWithParseChrome()
+    {
+        Url url = new Url("www.google.com", "1234");
+        String userAgent = "Chrome/7.29.0";
+        String ip = "192.168.0.1";
+        HttpServletRequest req = Mockito.mock(HttpServletRequest.class);
+        when(req.getHeader("user-agent")).thenReturn(userAgent);
+        when(req.getRemoteAddr()).thenReturn(ip);
+        when(urlRepository.existsByShortUrl(any())).thenReturn(true);
+        when(urlRepository.findByShortUrl(any())).thenReturn(url);
+        urlService.findByShortUrl("1234", req);
+
+        Assertions.assertTrue(url.getRequestList().size()>0);
+
+    }
+
 }
