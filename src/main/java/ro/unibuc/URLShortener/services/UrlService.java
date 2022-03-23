@@ -85,7 +85,6 @@ public class UrlService {
     {
         String ip = getClientIpAddress(httpReq);
         String userAgent = httpReq.getHeader("user-agent");
-        System.out.println(getHeadersInfo(httpReq));
         String browser = parseBrowserInfo(userAgent);
         String deviceType = getDeviceType(userAgent);
         Request req = new Request();
@@ -95,19 +94,7 @@ public class UrlService {
         req.setRequestDate(new Date());
         return req;
     }
-    private Map<String, String> getHeadersInfo(HttpServletRequest request) {
 
-        Map<String, String> map = new HashMap<String, String>();
-
-        Enumeration headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String key = (String) headerNames.nextElement();
-            String value = request.getHeader(key);
-            map.put(key, value);
-        }
-
-        return map;
-    }
     private String getClientIpAddress(HttpServletRequest request) {
         String xForwardedForHeader = request.getHeader("X-Forwarded-For");
         if (xForwardedForHeader == null) {
