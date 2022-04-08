@@ -1,31 +1,29 @@
 package ro.unibuc.URLShortener.controller;
 
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.ModelAndView;
-import ro.unibuc.URLShortener.data.Request;
 import ro.unibuc.URLShortener.services.UrlService;
 import ro.unibuc.URLShortener.data.Url;
 
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.StringTokenizer;
+
 
 @Controller
 public class UrlController {
 
+    @Autowired
+    private MeterRegistry metricsRegistry;
     @Autowired
     private UrlService urlService;
 
@@ -38,15 +36,19 @@ public class UrlController {
         return urlService.getAll();
     }
 
+
+
+    @Timed(value = "urlshortener_shorten_time", description = "Time taken to shorten an URL")
+    @Counted(value = "urlshortener_shorten_count", description = "Times an URL was shortened")
     @PostMapping("/shorten")
     @ResponseBody
     public ResponseEntity<String> shortenUrl(@RequestBody String url) {
-        String escapedURL = null;
         System.out.println(url);
         String shortened = urlService.shortenUrl(url);
         return new ResponseEntity<>(shortened, HttpStatus.OK);
 
     }
+
 
     @GetMapping("/get/{shortUrl}")
     @ResponseBody
@@ -55,6 +57,8 @@ public class UrlController {
         return new ResponseEntity<Url>(urlService.findByShortUrl(shortUrl), HttpStatus.OK);
     }
 
+    @Timed(value = "urlshortener_shortened_redirect_time", description = "Time taken to redirect from a shortened URL")
+    @Counted(value = "urlshortener_shortened_redirect_count", description = "Times a shortened URL was used")
     @GetMapping("/{shortUrl}")
     public void redirect(HttpServletResponse response, @PathVariable String shortUrl){
         Url url = urlService.findByShortUrl(shortUrl, httpReq);
