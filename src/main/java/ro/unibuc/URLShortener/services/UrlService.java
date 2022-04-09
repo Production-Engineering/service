@@ -1,10 +1,13 @@
 package ro.unibuc.URLShortener.services;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ro.unibuc.URLShortener.controller.UrlController;
 import ro.unibuc.URLShortener.data.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +20,7 @@ public class UrlService {
     private UrlRepository urlRepository;
     @Autowired
     private AccountRepository accountRepository;
-
+    Logger logger = LoggerFactory.getLogger(UrlService.class);
     public List<Url> getAll() {
         return new ArrayList<>(urlRepository.findAll());
     }
@@ -69,7 +72,7 @@ public class UrlService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             String email = (String) auth.getPrincipal();
-            System.out.println(email);
+            logger.info("Current user logged in: "+ email);
             Optional<Account> authenticatedOptional = accountRepository.findByEmail(email);
             if (authenticatedOptional.isPresent()) {
                 Account authenticatedAcc = authenticatedOptional.get();
