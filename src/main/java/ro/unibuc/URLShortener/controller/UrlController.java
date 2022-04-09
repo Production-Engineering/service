@@ -4,6 +4,8 @@ package ro.unibuc.URLShortener.controller;
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 @Controller
 public class UrlController {
 
+    Logger logger = LoggerFactory.getLogger(UrlController.class);
     @Autowired
     private MeterRegistry metricsRegistry;
     @Autowired
@@ -43,7 +46,7 @@ public class UrlController {
     @PostMapping("/shorten")
     @ResponseBody
     public ResponseEntity<String> shortenUrl(@RequestBody String url) {
-        System.out.println(url);
+        logger.info("/shorten called with "+ url);
         String shortened = urlService.shortenUrl(url);
         return new ResponseEntity<>(shortened, HttpStatus.OK);
 
@@ -53,7 +56,7 @@ public class UrlController {
     @GetMapping("/get/{shortUrl}")
     @ResponseBody
     public ResponseEntity<Url> getShortUrl(@PathVariable String shortUrl, HttpServletRequest httpReq){
-        System.out.println("getShortURL received: " + shortUrl);
+        logger.info("getShortURL received: " + shortUrl);
         return new ResponseEntity<Url>(urlService.findByShortUrl(shortUrl), HttpStatus.OK);
     }
 
@@ -67,6 +70,7 @@ public class UrlController {
                 response.sendRedirect(url.getLongUrl());
             }
         } catch (IOException e){
+            logger.error("Could not redirect from "+ shortUrl);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not redirect");
         }
     }

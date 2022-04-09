@@ -1,5 +1,7 @@
 package ro.unibuc.URLShortener.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import ro.unibuc.URLShortener.controller.UrlController;
 import ro.unibuc.URLShortener.data.Account;
 import ro.unibuc.URLShortener.data.AccountRepository;
 import ro.unibuc.URLShortener.data.Role;
@@ -21,6 +24,7 @@ import java.util.Optional;
 
 @Component
 public class AccountService {
+    Logger logger = LoggerFactory.getLogger(AccountService.class);
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -33,10 +37,12 @@ public class AccountService {
     public ResponseEntity<?> createAccount(AccountDTO accountDTO) {
 
         if (!accountDTO.getPassword().equals(accountDTO.getMatchingPassword()))
-            return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);
+        {   logger.info("New account passwords don't match");
+            return new ResponseEntity<>("Passwords don't match", HttpStatus.BAD_REQUEST);}
 
         if (accountRepository.existsByEmail(accountDTO.getEmail()))
-            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);
+        {   logger.info("Email already used");
+            return new ResponseEntity<>("Email already used!", HttpStatus.BAD_REQUEST);}
 
         Account newAcc = new Account(accountDTO.getEmail(), accountDTO.getFirstName(), accountDTO.getLastName(), passwordEncoder.encode(accountDTO.getPassword()));
         Optional<Role> defaultRole = roleRepository.findByName("USER");
